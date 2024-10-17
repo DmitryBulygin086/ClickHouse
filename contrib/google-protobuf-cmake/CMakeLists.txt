@@ -340,6 +340,8 @@ if (CMAKE_HOST_SYSTEM_NAME STREQUAL CMAKE_SYSTEM_NAME
         utf8_validity
         ${protobuf_absl_used_targets})
     add_executable(protobuf::protoc ALIAS protoc)
+    # Remove any compile flags inherited from the upper level
+    target_compile_options(protobuf::protoc PRIVATE "")
 
     if (ENABLE_FUZZING)
         # `protoc` will be built with sanitizer and it could fail during ClickHouse build

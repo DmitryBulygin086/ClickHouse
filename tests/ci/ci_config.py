@@ -336,7 +336,8 @@ class CI:
             required_builds=[BuildNames.PACKAGE_ASAN], num_batches=2
         ),
         JobNames.STATELESS_TEST_ARM_ASAN: CommonJobConfigs.STATELESS_TEST.with_properties(
-            required_builds=[BuildNames.PACKAGE_ARM_ASAN], num_batches=2,
+            required_builds=[BuildNames.PACKAGE_ARM_ASAN],
+            num_batches=2,
             runner_type=Runners.FUNC_TESTER_ARM,
         ),
         JobNames.STATELESS_TEST_TSAN: CommonJobConfigs.STATELESS_TEST.with_properties(

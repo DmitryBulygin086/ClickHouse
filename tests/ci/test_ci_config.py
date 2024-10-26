@@ -107,7 +107,11 @@ class TestCIConfig(unittest.TestCase):
                     expected_builds = [CI.BuildNames.PACKAGE_UBSAN]
                 elif "debug" in job:
                     expected_builds = [CI.BuildNames.PACKAGE_DEBUG]
-                elif job in ("Unit tests (release)", "ClickHouse Keeper Jepsen", "ClickHouse Server Jepsen"):
+                elif job in (
+                    "Unit tests (release)",
+                    "ClickHouse Keeper Jepsen",
+                    "ClickHouse Server Jepsen",
+                ):
                     expected_builds = [CI.BuildNames.BINARY_RELEASE]
                 elif "release" in job:
                     expected_builds = [CI.BuildNames.PACKAGE_RELEASE]
@@ -120,7 +124,10 @@ class TestCIConfig(unittest.TestCase):
                 elif "uzzer" in job:
                     expected_builds = [CI.BuildNames.FUZZERS]
                 elif "Docker" in job:
-                    expected_builds = [CI.BuildNames.PACKAGE_RELEASE, CI.BuildNames.PACKAGE_AARCH64]
+                    expected_builds = [
+                        CI.BuildNames.PACKAGE_RELEASE,
+                        CI.BuildNames.PACKAGE_AARCH64,
+                    ]
                     self.assertTrue(
                         CI.JOB_CONFIGS[job].required_builds[0]
                         in (
@@ -132,7 +139,10 @@ class TestCIConfig(unittest.TestCase):
                 elif "SQLTest" in job:
                     expected_builds = [CI.BuildNames.PACKAGE_RELEASE]
                 elif "Jepsen" in job:
-                    expected_builds = [CI.BuildNames.PACKAGE_RELEASE, CI.BuildNames.BINARY_RELEASE]
+                    expected_builds = [
+                        CI.BuildNames.PACKAGE_RELEASE,
+                        CI.BuildNames.BINARY_RELEASE,
+                    ]
                 elif job in (
                     CI.JobNames.STYLE_CHECK,
                     CI.JobNames.FAST_TEST,
@@ -145,7 +155,11 @@ class TestCIConfig(unittest.TestCase):
                     print(f"Job [{job}] required build not checked")
                     assert False
 
-                self.assertCountEqual(expected_builds, CI.JOB_CONFIGS[job].required_builds or [], f"Required builds are not valid for job [{job}]")
+                self.assertCountEqual(
+                    expected_builds,
+                    CI.JOB_CONFIGS[job].required_builds or [],
+                    f"Required builds are not valid for job [{job}]",
+                )
 
     def test_job_stage_config(self):
         """

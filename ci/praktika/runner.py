@@ -133,11 +133,17 @@ class Runner:
             env.dump()
 
         if job.run_in_docker and not no_docker:
-            # TODO: add support for any image, including not from ci config (e.g. ubuntu:latest)
-            docker_tag = RunConfig.from_fs(workflow.name).digest_dockers[
-                job.run_in_docker
-            ]
-            docker = docker or f"{job.run_in_docker}:{docker_tag}"
+            if ":" in job.run_in_docker:
+                docker_name, docker_tag = job.run_in_docker.split(":")
+                print(
+                    f"WARNING: Job [{job.name}] use custom docker image with a tag - praktika won't control docker version"
+                )
+            else:
+                docker_name, docker_tag = (
+                    job.run_in_docker,
+                    RunConfig.from_fs(workflow.name).digest_dockers[job.run_in_docker],
+                )
+            docker = docker or f"{docker_name}:{docker_tag}"
             cmd = f"docker run --rm --user \"$(id -u):$(id -g)\" -e PYTHONPATH='{Settings.DOCKER_WD}:{Settings.DOCKER_WD}/ci' --volume ./:{Settings.DOCKER_WD} --volume {Settings.TEMP_DIR}:{Settings.TEMP_DIR} --workdir={Settings.DOCKER_WD} {docker} {job.command}"
         else:
             cmd = job.command

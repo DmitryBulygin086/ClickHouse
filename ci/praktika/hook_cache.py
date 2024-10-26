@@ -8,11 +8,9 @@ from praktika.utils import Utils
 
 class CacheRunnerHooks:
     @classmethod
-    def configure(cls, _workflow):
-        workflow_config = RunConfig.from_fs(_workflow.name)
+    def configure(cls, workflow, local_run=False):
+        workflow_config = RunConfig.from_fs(workflow.name)
         cache = Cache()
-        assert _Environment.get().WORKFLOW_NAME
-        workflow = _get_workflows(name=_Environment.get().WORKFLOW_NAME)[0]
         print(f"Workflow Configure, workflow [{workflow.name}]")
         assert (
             workflow.enable_cache
@@ -72,11 +70,12 @@ class CacheRunnerHooks:
                         )
 
         print(f"Write config to GH's job output")
-        with open(_Environment.get().JOB_OUTPUT_STREAM, "a", encoding="utf8") as f:
-            print(
-                f"DATA={workflow_config.to_json()}",
-                file=f,
-            )
+        if not local_run:
+            with open(_Environment.get().JOB_OUTPUT_STREAM, "a", encoding="utf8") as f:
+                print(
+                    f"DATA={workflow_config.to_json()}",
+                    file=f,
+                )
         print(f"WorkflowRuntimeConfig: [{workflow_config.to_json(pretty=True)}]")
         print(
             "Dump WorkflowConfig to fs, the next hooks in this job might want to see it"

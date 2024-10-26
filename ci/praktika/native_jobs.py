@@ -137,7 +137,7 @@ def _build_dockers(workflow, job_name):
         sys.exit(1)
 
 
-def _config_workflow(workflow: Workflow.Config, job_name):
+def _config_workflow(workflow: Workflow.Config, job_name, local_run=False):
     def _check_yaml_up_to_date():
         print("Check workflows are up to date")
         stop_watch = Utils.Stopwatch()
@@ -264,7 +264,7 @@ def _config_workflow(workflow: Workflow.Config, job_name):
     if workflow.enable_cache:
         print("Cache Lookup")
         stop_watch = Utils.Stopwatch()
-        workflow_config = CacheRunnerHooks.configure(workflow)
+        workflow_config = CacheRunnerHooks.configure(workflow, local_run=local_run)
         results.append(
             Result(
                 name="Cache Lookup",
@@ -365,13 +365,14 @@ def _finish_workflow(workflow, job_name):
 
 
 if __name__ == "__main__":
-    job_name = sys.argv[1]
-    assert job_name, "Job name must be provided as input argument"
-    workflow = _get_workflows(name=_Environment.get().WORKFLOW_NAME)[0]
+    job_name = "Config Workflow"
+    workflow_name = "PR"
+    assert job_name and workflow_name, "Job name must be provided as input argument"
+    workflow = _get_workflows(name=workflow_name)[0]
     if job_name == Settings.DOCKER_BUILD_JOB_NAME:
         _build_dockers(workflow, job_name)
     elif job_name == Settings.CI_CONFIG_JOB_NAME:
-        _config_workflow(workflow, job_name)
+        _config_workflow(workflow, job_name, local_run=True)
     elif job_name == Settings.FINISH_WORKFLOW_JOB_NAME:
         _finish_workflow(workflow, job_name)
     else:
